@@ -1,0 +1,36 @@
+{% extends "auctions/layout.html" %} 
+
+{% block body %}
+
+<h2>Category: {{ category.category_name }}</h2>
+
+<div class="row">
+{% for listing in listing %}
+  <div class="col-lg-3 col-sm-6">
+    <div class="goods-card">
+      <img
+        src="{{ listing.img_url }}"
+        alt=""
+        class="goods-image"
+        height="200"/>
+      <h5 class="goods-title">
+        <a href="{% url 'listing' listing_id=listing.id %}"
+          >{{ listing.title }}</a>
+      </h5>
+      <p class="goods-description">{{ listing.description }}</p>
+      {% if listing.current_bid == None %}
+        <p class="goods-price">Current Price: &#36;{{ listing.starting_bid }}</p>
+        {% else %}
+        <p class="goods-price">Current price: &#36;{{ listing.current_bid }}</p>
+      {% endif %}
+      <small class="text-muted">Created {{ listing.date }}</small>
+    </div>
+  </div>
+{% empty %} 
+  <div class="p-empty">
+    <p>Empty ...</p>
+  </div>
+{% endfor %}
+</div>
+
+{% endblock %}

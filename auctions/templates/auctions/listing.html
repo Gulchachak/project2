@@ -1,0 +1,131 @@
+{% extends "auctions/layout.html" %} 
+
+{% block body %}
+
+<h2>Listing: {{ listing.title }}</h2>
+
+{% if user.is_authenticated and listing.is_active == True %} 
+
+  {% for message in messages %}
+    <div class="container-fluid p-0">
+      <div class="alert {{ message.tags }} alert-dismissible fade show" role="alert" >
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="True">&times;</span>
+        </button>
+          {{ message }}
+      </div>
+    </div>
+  {% endfor %}
+
+  {% if user in listing.watcher.all %}
+    <a class="btn btn-sm btn-info" class="nav-link" href="{% url 'remove_watchlist' listing.id %}">Remove from watchlist</a>
+  {% else %}
+    <a class="btn btn-sm btn-info" class="nav-link" href="{% url 'add_watchlist' listing.id %}">Add to watchlist</a>
+  {% endif %}
+
+{% endif %}
+
+
+{% if user.is_authenticated and listing.author.id == user.id and listing.is_active == True %}
+  <!-- <a class="btn btn-sm btn-info" href="{% url 'update' listing.id %}">Update</a>
+  <a class="btn btn-sm btn-info" href="{% url 'delete' listing.id %}">Delete</a> -->
+  <a class="btn btn-sm btn-danger" href="{% url 'close_bid' listing.id %}">Close bid</a>
+{% endif %}
+
+<div class="container">
+  <div class="col-4">
+    <img src="{{ listing.img_url }}" height="300" alt="image" />
+  </div>
+  <div class="col-8">
+  <p>{{ listing.description }}</p>
+
+  {% if listing.current_bid == None %}
+    <p>Starting bid: <strong>&#36;{{ listing.starting_bid }}</strong></p>
+  {% else %} 
+    {% if listing.buyer is not None and listing.is_active == False %}
+      {% if listing.author.id == user.id %}
+        <p><font color="red">Congratulations! You have sold this item to {{ listing.buyer }} for  &#36;{{ listing.current_bid }}.</font></p>
+      {% elif listing.buyer.id == user.id %}
+        <p><font color="red">Congratulations! You have won this item.</font></p>
+      {% else %}
+        <p><font color="red">The item is already sold.</font></p>
+      {% endif %} 
+    {% else %}
+      <p><strong>Current price: &#36;{{ listing.current_bid }}</strong></p>
+    {% endif %} 
+  {% endif %}
+
+  <h5><u>Details</u></h5>
+
+  {% if listing.is_active == True %}
+    <ul>
+      <li>Listed by: {{ listing.author }}</li>
+      <li>Category: {{ listing.category }}</li>
+      {% if listing.buyer != None %}
+        <li>Last bidder: {{ listing.buyer }}</li>
+      {% endif %}
+    </ul>
+  {% else %}
+    <li>Listed by: {{ listing.author }}</li>
+    <li>Category: {{ listing.category }}</li>
+    <li>Bought by: {{ listing.buyer }} for {{ listing.current_bid }}</li>
+  {% endif %} 
+
+  {% if user.is_authenticated and listing.is_active == True %}
+    <h5><u>Bids</u></h5>
+    You can place your bid (it should be higher than the current price)
+    <form action="{% url 'add_bid' listing.id %}" method="post">
+    {% csrf_token %}
+      <div class="form-row">
+        <div class="col">
+          <input type="text" name="bid" placeholder="Place bid" class="form-control"/>
+        </div>
+      <input type="submit" value="Submit" class="btn btn-outline-info" />
+      </div>
+    </form>
+    <!-- {% for bid in listing.bids.all %} 
+    <div>
+    <strong>{{ bid.bidder }}: </strong>
+    {{ bid.new_bid }}
+    <p><small>{{ bid.date }} </small></p>
+    </div>
+    {% endfor %}  -->
+  {% endif %}
+
+  <br />
+
+  {% if user.is_authenticated and listing.is_active == True %}
+  <h5><u>Comments</u></h5>
+    <div class="content-section">
+      {% if not listing.comments.all %} 
+        No comments yet... 
+      {% else %} 
+        {% for comment in listing.comments.all %}
+          <div>
+            <strong>{{ comment.commenter }}: </strong>
+            {{ comment.comment }}
+            <p><small>{{ comment.date }} </small></p>
+          </div>
+        {% endfor %} 
+      {% endif %}
+    </div>
+    <form action="{% url 'add_comment' listing.id %}" method="post">
+      {% csrf_token %}
+      <div class="form-row">
+        <div class="col">
+          <input type="text" name="comment" placeholder="Your comment" class="form-control" />
+        </div>
+      <input type="submit" value="Submit" class="btn btn-outline-info" />
+      </div>
+    </form>        
+  {% endif %}    
+  </div>
+
+  {% if not user.is_authenticated %}
+    <p>Please, <a href="{% url 'login' %}">Log In</a> to make a bid and add a comment.</p>
+  {% endif %}
+
+  <br />
+</div>
+
+{% endblock %}

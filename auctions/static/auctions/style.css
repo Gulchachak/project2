@@ -1,0 +1,36 @@
+body {
+    padding: 10px;
+}
+
+.container{
+  padding-top: 15px;
+}
+
+.goods-card {
+  position: relative;
+  text-align: center;
+  padding: 15px;
+  margin-top: 15px;
+  border: 1px solid rgba(0,0,0,.1);
+}
+.goods-title {
+  padding-top: 15px;
+  padding-bottom: 5px;
+  font-size: 16px;
+  color: #262d33;
+  font-family: Roboto Slab, serif;
+}
+.goods-description {
+  color: #4b5157;
+  font-size: 14px;
+  line-height: 20px;
+}
+.goods-price {
+  color: #262d33;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.p-empty{
+    margin-left: 20px;
+}

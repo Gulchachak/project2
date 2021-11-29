@@ -1,0 +1,16 @@
+{% extends "auctions/layout.html" %}{% load crispy_forms_tags %}{% block body %}
+
+<h2>Create New Listing</h2>
+
+<div class="content-section">
+  <form method="post" enctype="multipart/form-data" novalidate>
+    <fieldset class="form-group">
+      <div class="form-group">{% csrf_token %} {{ form|crispy }}</div>
+    </fieldset>
+    <div class="form-group">
+      <button type="submit" class="btn btn-outline-info">Save</button>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

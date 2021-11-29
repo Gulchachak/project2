@@ -1,0 +1,11 @@
+{% extends "auctions/layout.html" %}{% block body %}
+
+<p>Are you sure you want to delete {{ listing }}?</p>
+
+<form action="{% url 'delete' listing.id %}" method="POST">
+  {% csrf_token %}
+  <a class="btn btn-sm btn-info" href="{% url 'index' %}">Cancel</a>
+  <input class="btn btn-sm btn-danger" type="submit" name="Confirm" />
+</form>
+
+{% endblock %}

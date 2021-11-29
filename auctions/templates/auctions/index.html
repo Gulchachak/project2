@@ -1,0 +1,43 @@
+{% extends "auctions/layout.html" %} 
+
+{% block body %}
+
+<h2>Active Listings</h2>
+
+{% for message in messages %}
+    <div class="container-fluid p-0">
+      <div class="alert {{ message.tags }} alert-dismissible fade show" role="alert" >
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="True">&times;</span>
+        </button>
+          {{ message }}
+      </div>
+    </div>
+{% endfor %}
+
+<div class="row">
+  {% for listing in listings %}
+  <div class="col-lg-3 col-sm-6">
+    <div class="goods-card">
+      <img
+        src="{{ listing.img_url }}"
+        alt=""
+        class="goods-image"
+        height="200"/>
+      <h5 class="goods-title">
+        <a href="{% url 'listing' listing_id=listing.id %}"
+          >{{ listing.title }}</a>
+      </h5>
+      <p class="goods-description">{{ listing.description }}</p>
+      {% if listing.current_bid == None %}
+        <p class="goods-price">Current Price: &#36;{{ listing.starting_bid }}</p>
+        {% else %}
+        <p class="goods-price">Current price: &#36;{{ listing.current_bid }}</p>
+      {% endif %}
+      <small class="text-muted">Created {{ listing.date }}</small>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock %}
